@@ -43,23 +43,30 @@
 //import lombok.extern.slf4j.Slf4j;
 //
 //
-//
 //@RunWith(SpringRunner.class)
 ////@SpringBootTest(classes = { KitchenSinkTester.class, DatabaseEngine.class })
-//@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
-//public class KitchenSinkTester {
-//	@Autowired
-//	private SQLDatabaseEngine databaseEngine;
-//
+//@SpringBootTest(classes = { CouponWarehouse.class, KitchenSinkControllerTester.class })
+//public class KitchenSinkControllerTester {
 //	@Test
-//	public void testNotFound() throws Exception {
+//	public void CouponWarehouseTester() {
+//		KitchenSinkController controller = new KitchenSinkController();
+//		SQLDatabaseEngine db = new SQLDatabaseEngine();
+//		Users user = new Users("test");
 //		boolean thrown = false;
+//		user.setSubStage(1);
+//		db.pushUser(user);
+//		MessageEvent<TextMessageContent> event = new MessageEvent<TextMessageContent>();
 //		try {
-//			this.databaseEngine.searchUser("0000000000");
-//		} catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(thrown).isEqualTo(true);
-//	}
+//			controller.handleTextMessageEvent(event);
+//			
 //
+//		}catch (Exception e) {
+//				thrown = false;
+//		}
+//		assertThat(!thrown).isEqualTo(true);
+//		
+//		
+//	}
+//	
 //}
+//
