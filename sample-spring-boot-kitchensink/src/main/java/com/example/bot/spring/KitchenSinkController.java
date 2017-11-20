@@ -90,6 +90,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
+/**
+* KitchenSinkController will mainly perform the function of a interface which will interact with users.
+* That is receiving the event triggered by users and let StageHandler to handle content to get replyMessage
+* and reply message to users
+* @version 1.0
+* @since   2017/11/19
+*/
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
@@ -107,14 +114,21 @@ public class KitchenSinkController {
 	private StageHandler stageHandler = new StageHandler();
 	private int number = 0; // No. of links
 
-
+	/**
+	* Constructor of KitchenSinkController
+	*/
 	public KitchenSinkController() {
 		database = new SQLDatabaseEngine();
 		itscLOGIN = System.getenv("ITSC_LOGIN");
 	}
 
 
-
+	/**
+	* This method will be triggered user text content when user send text to chatbot
+	* and let handleTextContent() to handle the text
+	* @param event a MessageEvent object
+	* @throws Exception when there is an exception
+	*/
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -168,6 +182,12 @@ public class KitchenSinkController {
 		reply(event.getReplyToken(), new AudioMessage(mp4.getUri(), 100));
 	}
 */
+	/**
+	* This method will be triggered user text content when user block/unfollow
+	* and let stageHandler's function to handle the text
+	* @param event an UnfollowEvent object
+	* @see StageHandler
+	*/
 	@EventMapping
 	public void handleUnfollowEvent(UnfollowEvent event) {
 		log.info("unfollowed this bot: {}", event);
@@ -177,7 +197,12 @@ public class KitchenSinkController {
 		}
 		//currentUser = null;
 	}
-
+	/**
+	* This method will be triggered user text content when user unblock/follow
+	* and let stageHandler's function to handle the text
+	* @param event a FollowEvent object
+	* @see StageHandler
+	*/
 	@EventMapping
 	public void handleFollowEvent(FollowEvent event) {
 		String replyToken = event.getReplyToken();
@@ -279,18 +304,18 @@ public class KitchenSinkController {
 
 		if(event.getSource().getUserId().equals("U16d4f0da660c593be7cffe7d1208f036") && text.equals("activate") ) {
 			ArrayList<String> usersid= database.findallusers();
-			
 
-			String link = database.searchLink(number);		
-			
+
+			String link = database.searchLink(number);
+
 			number++;
 			if(number > database.countLink()) {
 				number = 0;
 			}
-			
 
-			
-			
+
+
+
 			for (int i=0;i<usersid.size();i++) {
 				pushText(usersid.get(i),("Regular Healthy Tips!: \n"+ link));
 			}
@@ -331,8 +356,13 @@ public class KitchenSinkController {
 	        }
 	}
 		//database.updateUser(currentUser);
-		if(toMultipleUsers(replymsg))
+		if(toMultipleUsers(replymsg)){
+			/*
+			log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+			log.info(replymsg);
+			log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");*/
 			pushToAll(replymsg);
+		}
 		else
 			this.replyText(replyToken,replymsg);
 
@@ -346,9 +376,16 @@ public class KitchenSinkController {
 	private void pushToAll(String replymsg){
 		String[] replyinfo = replymsg.split("@@");
 		String msg = replyinfo[1];
-		for(int i = 2 ; i < replyinfo.length;i++) if(!replyinfo[i].equals("-1")) this.pushText(replyinfo[i],msg); // non null
+		for(int i = 2 ; i < replyinfo.length;i++)
+			//if(!replyinfo[i].equals("-1")){this.pushText(replyinfo[i],msg);} // non null
+			if(replyinfo[i].length() > 15){this.pushText(replyinfo[i],msg);} // non null
 	}
 
+	/**
+	* This method will be create Uri based on the given path
+	* @param path a String of the path
+	* @return String uri
+	*/
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
 	}
@@ -367,7 +404,7 @@ public class KitchenSinkController {
 				Thread.currentThread().interrupt();
 			}
 		//});
-		//chatbotThread.start();
+		//chatbotThread.start()
 	}
 	/*
 	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {

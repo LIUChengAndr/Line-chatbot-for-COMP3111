@@ -41,8 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
-
-@Slf4j
 /**
 * StageHandler will mainly perform the function of handling the event and deciding
 * what is the reply message to users. More importantly, it also perform the functions
@@ -51,6 +49,7 @@ import java.net.URI;
 * @version 1.0
 * @since   2017/11/19
 */
+@Slf4j
 public class StageHandler {
 	private String time;
 	private InputChecker inputChecker = new InputChecker();
@@ -87,10 +86,13 @@ public class StageHandler {
 	private float Grain_weight_per_serve = 500;//500kj Grain
 	private float MM_weight_per_serve = 100;
 
-  	/**
-	* InputChecker will perform the function of checking whether users' inputs are correct
-	* and updating the database corresponding to different input
-	* @param replyToken
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users newly followed the bot.
+	* It will also record and update new users infomation
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
 	*/
 	public String initStageHandler(   String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
@@ -141,7 +143,24 @@ public class StageHandler {
 				replymsg="Please enter reasonable numbers!";
 		}break;
 		case 5:{
+			if( inputChecker.BudgetEditting(text,currentUser,database,"set") ) {
+				replymsg="Please enter your budget:";
+				currentUser.setSubStage(currentUser.getSubStage()+1);
+			}
+			else
+				replymsg="Please enter reasonable numbers!";
+		}break;
+		case 6:{
 			if(inputChecker.AgeEditting(text, currentUser, database, "set")) {
+       	replymsg="Please enter you budget.";
+				//database.pushUser(currentUser);
+				currentUser.setSubStage(currentUser.getSubStage()+1);
+			}
+			else
+				replymsg="Please enter reasonable numbers!";
+		}break;
+		case 6:{
+			if(inputChecker.BudgetEditting(text, currentUser, database, "set")) {
        			replymsg="Your data has been recorded.\nInput anything to conitnue.";
 				//database.pushUser(currentUser);
        			currentUser.setStage("Main");
@@ -154,12 +173,19 @@ public class StageHandler {
 				//log.info("Stage error.");
 			}
 		}
-
 		database.updateUser(currentUser);//update user stage when the stage has been changed
 		return replymsg;
 	}
 
-	public String mainStageHandler(  String text, Users currentUser, SQLDatabaseEngine database) {
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users come to the main stage
+	* it will help user to be directed to differen funcitons of chatbot
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
+	public String mainStageHandler(String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
 		switch(currentUser.getSubStage()) {
 		case 0:{
@@ -296,6 +322,14 @@ public class StageHandler {
 		database.updateUser(currentUser);//update user stage when the stage has been changed
 		return replymsg;
 	}
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users enter the diet planner
+	* It will also record and update users' infomation
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
 	public String dietPlannerHandler(   String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
 		switch(currentUser.getSubStage()) {
@@ -508,8 +542,8 @@ public class StageHandler {
 			 * Update corresponding user's "diet_plan" table based on his/her information
 			 * */
 			String user_id = currentUser.getID();
-			//double budget = currentUser.getBudget();
-			double budget = 100;
+			double budget = currentUser.getBudget();
+			//double budget = 100;
 			if (database.search_diet_plan(user_id)) {
 				replymsg = "You've already generated a diet plan:\n\n";
 				replymsg += database.display_diet_plan(user_id, budget);
@@ -536,8 +570,8 @@ public class StageHandler {
 			replymsg = "Reminder List:\n";
 			try {
 				String user_id = currentUser.getID();
-				//double budget = currentUser.getBudget();
-				double budget = 100;
+				double budget = currentUser.getBudget();
+				// double budget = 100;
 
 				// Instantiate a Date object
 				Date dNow = new Date();
@@ -792,8 +826,15 @@ public class StageHandler {
 
 
 
-
-	public String livingHabitCollectorEditor(   String text, Users currentUser, SQLDatabaseEngine database) {
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users want to editing their informations.
+	* It will also record and update users' infomation
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
+	public String livingHabitCollectorEditor(String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
 		switch(currentUser.getSubStage()) {
 		case 0:{
@@ -804,13 +845,14 @@ public class StageHandler {
 											+ "3 Edit Weight\n"
 											+ "4 Edit Height\n"
 											+ "5 Edit Bodyfat\n"
+											+ "6 Edit Budget\n"
 											// + "6 Edit Exercise Amount\n"
 											// + "7 Edit Calories Consumption\n"
 											// + "8 Edit Carbohydrate Consumption\n"
 											// + "9 Edit Protein Consumption\n"
 											// + "10 Edit Vegtable/Fruit Consumption \n"
 											// + "11 Edit Other Information about you\n"
-											+ "6 Show all your states \n"
+											+ "7 Show all your states \n"
 											+ "(type other things to back to menu)";
 			currentUser.setSubStage(-1);
 		}break;
@@ -855,6 +897,10 @@ public class StageHandler {
 			replymsg="Please enter the bodyfat(%) you wish to change to:";
 			currentUser.setSubStage(currentUser.getSubStage()+20) ;
 		}break;
+		case 6:{
+			replymsg="Please enter the budget you wish to change to:";
+			currentUser.setSubStage(currentUser.getSubStage()+20) ;
+		}break;
 		// case 6:{
 		// 	replymsg="Please enter the hours of excercise per day you wish to change:";
 		// 	currentUser.setSubStage(currentUser.getSubStage()+20) ;
@@ -879,7 +925,7 @@ public class StageHandler {
 		// 	replymsg="Please enter other information about yourself that you wish to change to:";
 		// 	currentUser.setSubStage(currentUser.getSubStage()+20) ;
 		// }break;
-		case 6:{
+		case 7:{
 			replymsg="These are all about your body:\n\n" 	+ currentUser.toString()+"\nType any to continue.";
 			currentUser.setSubStage(0);
 		}break;
@@ -917,6 +963,14 @@ public class StageHandler {
 		}break;
 		case 25:{
 			if(inputChecker.BodyfatEditting(text, currentUser, database, "update")) {
+	      		replymsg="Your data has been recorded.\nInput anything to conitnue.";
+	       		currentUser.setSubStage(0);
+			}
+			else
+				replymsg="Please enter reasonable numbers!";
+		}break;
+		case 26:{
+			if(inputChecker.BudgetEditting(text, currentUser, database, "update")) {
 	      		replymsg="Your data has been recorded.\nInput anything to conitnue.";
 	       		currentUser.setSubStage(0);
 			}
@@ -983,7 +1037,15 @@ public class StageHandler {
 		return replymsg;
 	}
 
-	public String livingHabitCollectorHandler(  String text, Users currentUser, SQLDatabaseEngine database) {
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users newly followed the bot and want to complete their personal informations.
+	* It will also record and update users' infomation
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
+	public String livingHabitCollectorHandler(String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
 		switch(currentUser.getSubStage()){
 		case 0:{
@@ -1126,6 +1188,15 @@ public class StageHandler {
 		return replymsg;
 	}
 
+
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users enter the healthPedia functions.
+	* It will also record and update users' infomation
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
 	public String healthPediaHandler(  String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
 		//user key word input
@@ -1213,22 +1284,35 @@ public class StageHandler {
 		currentUser.setStage("Main");//back to main
 		currentUser.setSubStage(0);
 		database.updateUser(currentUser);//update user stage when the stage has been changed
-		return replymsg;
+		return replyms
 	}*/
+
+	/**
+	* This is to use to handle the users' input(decide what to reply) when users try to do something related to coupons.
+	* It will also record and update users' infomation
+	* @param text users input text
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
 	public String couponHandler(   String text, Users currentUser, SQLDatabaseEngine database) {
 		String replymsg = "";
-		if(CouponWarehouse.getInstance().isCodeValid(currentUser.getID(),text) && !CouponWarehouse.getInstance().checkSelf(currentUser.getID(),text) ){
+		//if(CouponWarehouse.getInstance().isCodeValid(currentUser.getID(),text) && !CouponWarehouse.getInstance().checkSelf(currentUser.getID(),text) ){
+		if(CouponWarehouse.getInstance().isCodeValid(text) && !CouponWarehouse.getInstance().checkSelf(currentUser.getID(),text) ){
 			 Coupon newCoupon = CouponWarehouse.getInstance().issueCoupon(currentUser.getID(),text);
 			// if ( ! CouponWarehouse.getInstance().isNewUser(newCoupon.getInviter()) )
 			  replymsg += "@@" + newCoupon.getCoupon();
-			  if(CouponWarehouse.getInstance().notGotCoupon(newCoupon.getInviter())) replymsg += "@@"+newCoupon.getInviter();
+			  if( !CouponWarehouse.getInstance().isNewUser(newCoupon.getInviter()) || //check whether inviter can get coupon more
+				    !CouponWarehouse.getInstance().gotCouponNewUsers(newCoupon.getInviter())) replymsg += "@@"+newCoupon.getInviter();
 				else replymsg += "@@" + "-1"; // dummy representation for not sending
 
 			 	replymsg += "@@" + newCoupon.getInvitee();
-									log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-									log.info(replymsg);
-									log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
+				log.info("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+				log.info(Boolean.toString(CouponWarehouse.getInstance().isNewUser(newCoupon.getInviter())));
+				log.info(Boolean.toString(CouponWarehouse.getInstance().gotCouponNewUsers(newCoupon.getInviter())));
+				log.info("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+				if(CouponWarehouse.getInstance().isNewUser(newCoupon.getInviter()))
+				 	 CouponWarehouse.getInstance().insertGotCouponNewUsers(newCoupon.getInviter());
 		}
 		else{
 			replymsg = "oops! Your code is either invalid or used. (You can not get coupon by the code issued to yourself)";
@@ -1331,12 +1415,25 @@ public class StageHandler {
 //		}
 //		return replymsg;
 //	}
+	/**
+	* This is to use to handle the situation when user block/unfollow the chatbot
+	* It may record and update users' infomation
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	*/
 	public void unfollowHandler(Users currentUser , SQLDatabaseEngine database){
 		currentUser.setStage("Main");
 		currentUser.setSubStage(0);
 		database.updateUser(currentUser);//update user stage when the stage has been changed
 	}
-
+	/**
+	* This is to use to handle the situation when user unblock/follow the chatbot
+	* It will also record and update users' infomation
+	* @param event the follow event to get source user information and create new Users
+	* @param currentUser indicate the user using the bot currently. It's stage and substage may be changed in the function
+	* @param database Used to access database
+	* @return String return the reply message that will be sent to users.
+	*/
 	public String followHandler( Event event, Users currentUser , SQLDatabaseEngine database){
 		String msg = "";
 		try{
@@ -1356,7 +1453,8 @@ public class StageHandler {
 					+ "Please first tell us some of your personal information: type anything to continue";
 			currentUser = new Users(event.getSource().getUserId());
 			database.pushUser(currentUser); // push new user
-			CouponWarehouse.getInstance().register(currentUser);
+			if(CouponWarehouse.isCampaignStarted())
+				CouponWarehouse.getInstance().register(currentUser);
 		}finally {
 			database.updateUser(currentUser);//update user stage when the stage has been changed
 		}

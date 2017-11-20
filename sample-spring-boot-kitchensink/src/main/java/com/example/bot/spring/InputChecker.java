@@ -151,6 +151,48 @@ public class InputChecker {
 	public boolean ValidOtherinfo(String text){
 		return (text.length()<=1000);
 	}
+
+		/**
+		* This method will check whether the budget is in correct format
+		* @param text input bodyfat
+		* @return boolean return whether the budget is in correct format
+		* @see Users
+		* @throws NumberFormatException if a numberformat exception occured
+		*/
+		public boolean ValidBudget(String text) throws NumberFormatException {
+			return( Double.parseDouble(text) < 100000 && Double.parseDouble(text)> 0);
+		}
+	/**
+		* This method will check whether the budget is in correct format
+		* @param text input bodyfat
+		* @return boolean return whether the budget is in correct format
+		* @see Users
+		* @throws NumberFormatException if a numberformat exception occured
+		*/
+		public boolean ValidBudget(String text) throws NumberFormatException {
+			return( Double.parseDouble(text) < 100000 && Double.parseDouble(text)> 0);
+		}
+		/**
+	* This method will check the input text(catch exception if it is not in correct format)
+	* and set the age for currentUser
+	* @param text users' input text
+	* @param currentUser current Users related to the call of this function
+	* @param database will be used to access database
+	* @param mode will be used to decide to update or not
+	* @see Users
+	* @return boolean return whether the input text is in correct format
+	*/
+	public boolean BudgetEditting(String text, Users currentUser, SQLDatabaseEngine database, String mode) {
+		try {
+			if( ValidBudget(text)) {
+					currentUser.setBudget(Double.parseDouble(text));
+					ModeSwitcher(currentUser, database, mode);
+					return true;
+				}
+			else
+				return false;
+		}catch(NumberFormatException ne){return false;}
+	}
 	/**
 	* This method will decide whether to update in database or not
 	* @param currentUser current Users related to the call of this function
@@ -181,6 +223,27 @@ public class InputChecker {
     			ModeSwitcher(currentUser, database, mode);
     			return true;
     		}
+			else
+				return false;
+		}catch(NumberFormatException ne){return false;}
+	}
+	/**
+	* This method will check the input text(catch exception if it is not in correct format)
+	* and set the age for currentUser
+	* @param text users' input text
+	* @param currentUser current Users related to the call of this function
+	* @param database will be used to access database
+	* @param mode will be used to decide to update or not
+	* @see Users
+	* @return boolean return whether the input text is in correct format
+	*/
+	public boolean BudgetEditting(String text, Users currentUser, SQLDatabaseEngine database, String mode) {
+		try {
+			if( ValidBudget(text)) {
+					currentUser.setBudget(Double.parseDouble(text));
+					ModeSwitcher(currentUser, database, mode);
+					return true;
+				}
 			else
 				return false;
 		}catch(NumberFormatException ne){return false;}
