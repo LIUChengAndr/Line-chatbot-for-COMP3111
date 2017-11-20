@@ -386,7 +386,6 @@ public class Users {
 			 + "Height: " + height +"\n"
 			 + "Weight: " + weight +"\n"
 			 + "Age: " + age +"\n"
-			 + "Budget: " + budget + "\n"
 			 //+"Excercise(hours/day): "+ Integer.toString(amountOfExercise) + "\n"
 			 +"BodyFat(%): "+ Double.toString(bodyFat) + "\n"
 			 // +"Calories(kcal/day): "+ Integer.toString(caloriesConsump) + "\n"

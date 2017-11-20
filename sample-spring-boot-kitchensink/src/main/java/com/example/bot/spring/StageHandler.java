@@ -845,14 +845,13 @@ public class StageHandler {
 											+ "3 Edit Weight\n"
 											+ "4 Edit Height\n"
 											+ "5 Edit Bodyfat\n"
-											+ "6 Edit Budget\n"
 											// + "6 Edit Exercise Amount\n"
 											// + "7 Edit Calories Consumption\n"
 											// + "8 Edit Carbohydrate Consumption\n"
 											// + "9 Edit Protein Consumption\n"
 											// + "10 Edit Vegtable/Fruit Consumption \n"
 											// + "11 Edit Other Information about you\n"
-											+ "7 Show all your states \n"
+											+ "6 Show all your states \n"
 											+ "(type other things to back to menu)";
 			currentUser.setSubStage(-1);
 		}break;
@@ -897,10 +896,6 @@ public class StageHandler {
 			replymsg="Please enter the bodyfat(%) you wish to change to:";
 			currentUser.setSubStage(currentUser.getSubStage()+20) ;
 		}break;
-		case 6:{
-			replymsg="Please enter the budget you wish to change to:";
-			currentUser.setSubStage(currentUser.getSubStage()+20) ;
-		}break;
 		// case 6:{
 		// 	replymsg="Please enter the hours of excercise per day you wish to change:";
 		// 	currentUser.setSubStage(currentUser.getSubStage()+20) ;
@@ -925,7 +920,7 @@ public class StageHandler {
 		// 	replymsg="Please enter other information about yourself that you wish to change to:";
 		// 	currentUser.setSubStage(currentUser.getSubStage()+20) ;
 		// }break;
-		case 7:{
+		case 6:{
 			replymsg="These are all about your body:\n\n" 	+ currentUser.toString()+"\nType any to continue.";
 			currentUser.setSubStage(0);
 		}break;
@@ -963,14 +958,6 @@ public class StageHandler {
 		}break;
 		case 25:{
 			if(inputChecker.BodyfatEditting(text, currentUser, database, "update")) {
-	      		replymsg="Your data has been recorded.\nInput anything to conitnue.";
-	       		currentUser.setSubStage(0);
-			}
-			else
-				replymsg="Please enter reasonable numbers!";
-		}break;
-		case 26:{
-			if(inputChecker.BudgetEditting(text, currentUser, database, "update")) {
 	      		replymsg="Your data has been recorded.\nInput anything to conitnue.";
 	       		currentUser.setSubStage(0);
 			}
