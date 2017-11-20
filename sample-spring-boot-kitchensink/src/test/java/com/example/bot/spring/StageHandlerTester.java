@@ -75,8 +75,8 @@ public class StageHandlerTester {
 		try {
 			for(int subStage=0; subStage <=5; subStage++){
 				user.setSubStage(subStage);
-				handler.initStageHandler("test", validInput[subStage], user, db);
-				handler.initStageHandler("test", invalidInput[subStage], user, db);
+				handler.initStageHandler( validInput[subStage], user, db);
+				handler.initStageHandler( invalidInput[subStage], user, db);
 			}
 		}catch (Exception e) {
 			thrown = true;
@@ -96,9 +96,9 @@ public class StageHandlerTester {
 	
 		try {
 				user.setBodyFat(0);
-				handler.dietPlannerHandler("test", "test", user, db);
+				handler.dietPlannerHandler( "test", user, db);
 				user.setBodyFat(30);
-				handler.dietPlannerHandler("test", "test", user, db);
+				handler.dietPlannerHandler("test", user, db);
 		}catch (Exception e) {
 			thrown = true;
 		}
@@ -114,14 +114,14 @@ public class StageHandlerTester {
 		db.pushUser(user);
 		//case 0
 		user.setSubStage(-1);
-		handler.dietPlannerHandler("test", "5", user, db);
+		handler.dietPlannerHandler( "5", user, db);
 		user.setSubStage(-1);
-		handler.dietPlannerHandler("test", "10", user, db);
+		handler.dietPlannerHandler( "10", user, db);
 
 		try {
 			for(int subStage = 1; subStage < 5; subStage ++) {
 				user.setSubStage(subStage);
-				handler.dietPlannerHandler("test", "test", user, db);
+				handler.dietPlannerHandler( "test", user, db);
 			}
 		}catch (Exception e) {
 			thrown = true;
@@ -141,9 +141,9 @@ public class StageHandlerTester {
 		//case 5
 		try {
 			user.setSubStage(5);
-			handler.dietPlannerHandler("test", "5", user, db);
+			handler.dietPlannerHandler( "5", user, db);
 			user.setSubStage(5);
-			handler.dietPlannerHandler("test", "10", user, db);
+			handler.dietPlannerHandler("10", user, db);
 		}catch (Exception e) {
 			thrown = true;
 		}
