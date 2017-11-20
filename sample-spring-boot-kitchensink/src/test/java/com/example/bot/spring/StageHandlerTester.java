@@ -50,84 +50,84 @@ public class StageHandlerTester {
 //	@Autowired
 //	private StageHandler handler;
 	
-//	@Test
-//	public void initStageHandlerTest() {
-//		StageHandler handler = new StageHandler();
-//		SQLDatabaseEngine db = new SQLDatabaseEngine();
-//		Users user = new Users("test");
-//		boolean thrown = false;
-//		user.setSubStage(0);
-//		db.pushUser(user);
-//		String[] validInput = 	{"valid ", 
-//								"validname",
-//								"M",
-//								"180",
-//								"70",
-//								"30"
-//								};
-//		String[] invalidInput = 	{"valid", 
-//								"invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalid",
-//								"invalid",
-//								"invalid",
-//								"invalid",
-//								"invalid"
-//								};
-//		try {
-//			for(int subStage=0; subStage <=5; subStage++){
-//				user.setSubStage(subStage);
-//				handler.initStageHandler("test", validInput[subStage], user, db);
-//				handler.initStageHandler("test", invalidInput[subStage], user, db);
-//			}
-//		}catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(!thrown).isEqualTo(true);
-//	}
-//
-//	@Test
-//	public void dietPlannerHandlerTest_case0() {
-//		StageHandler handler = new StageHandler();
-//		SQLDatabaseEngine db = new SQLDatabaseEngine();
-//		Users user = new Users("test");
-//		boolean thrown = false;
-//		user.setSubStage(0);
-//		db.pushUser(user);
-//		//case 0
-//	
-//		try {
-//				user.setBodyFat(0);
-//				handler.dietPlannerHandler("test", "test", user, db);
-//				user.setBodyFat(30);
-//				handler.dietPlannerHandler("test", "test", user, db);
-//		}catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(!thrown).isEqualTo(true);
-//	}
-//	
-//	@Test
-//	public void dietPlannerHandlerTest_case_lesethan_5() {
-//		StageHandler handler = new StageHandler();
-//		SQLDatabaseEngine db = new SQLDatabaseEngine();
-//		Users user = new Users("test");
-//		boolean thrown = false;
-//		db.pushUser(user);
-//		//case 0
-//		user.setSubStage(-1);
-//		handler.dietPlannerHandler("test", "5", user, db);
-//		user.setSubStage(-1);
-//		handler.dietPlannerHandler("test", "10", user, db);
-//
-//		try {
-//			for(int subStage = 1; subStage < 5; subStage ++) {
-//				user.setSubStage(subStage);
-//				handler.dietPlannerHandler("test", "test", user, db);
-//			}
-//		}catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(!thrown).isEqualTo(true);
-//	}
+	@Test
+	public void initStageHandlerTest() {
+		StageHandler handler = new StageHandler();
+		SQLDatabaseEngine db = new SQLDatabaseEngine();
+		Users user = new Users("test");
+		boolean thrown = false;
+		user.setSubStage(0);
+		db.pushUser(user);
+		String[] validInput = 	{"valid ", 
+								"validname",
+								"M",
+								"180",
+								"70",
+								"30"
+								};
+		String[] invalidInput = 	{"valid", 
+								"invalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalidinvalid",
+								"invalid",
+								"invalid",
+								"invalid",
+								"invalid"
+								};
+		try {
+			for(int subStage=0; subStage <=5; subStage++){
+				user.setSubStage(subStage);
+				handler.initStageHandler("test", validInput[subStage], user, db);
+				handler.initStageHandler("test", invalidInput[subStage], user, db);
+			}
+		}catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+	}
+
+	@Test
+	public void dietPlannerHandlerTest_case0() {
+		StageHandler handler = new StageHandler();
+		SQLDatabaseEngine db = new SQLDatabaseEngine();
+		Users user = new Users("test");
+		boolean thrown = false;
+		user.setSubStage(0);
+		db.pushUser(user);
+		//case 0
+	
+		try {
+				user.setBodyFat(0);
+				handler.dietPlannerHandler("test", "test", user, db);
+				user.setBodyFat(30);
+				handler.dietPlannerHandler("test", "test", user, db);
+		}catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+	}
+	
+	@Test
+	public void dietPlannerHandlerTest_case_lesethan_5() {
+		StageHandler handler = new StageHandler();
+		SQLDatabaseEngine db = new SQLDatabaseEngine();
+		Users user = new Users("test");
+		boolean thrown = false;
+		db.pushUser(user);
+		//case 0
+		user.setSubStage(-1);
+		handler.dietPlannerHandler("test", "5", user, db);
+		user.setSubStage(-1);
+		handler.dietPlannerHandler("test", "10", user, db);
+
+		try {
+			for(int subStage = 1; subStage < 5; subStage ++) {
+				user.setSubStage(subStage);
+				handler.dietPlannerHandler("test", "test", user, db);
+			}
+		}catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+	}
 	@Test
 	public void dietPlannerHandlerTest_case_5() {
 		StageHandler handler = new StageHandler();
